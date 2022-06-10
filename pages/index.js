@@ -1,6 +1,7 @@
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 import Banner from "../components/banner";
+import Card from "../components/card";
 
 export default function Home() {
 
@@ -18,6 +19,7 @@ export default function Home() {
 
       <main className={styles.main}>
         <Banner buttonText="View stores nearby" handleOnClick={handleOnBannerBtnClick} />
+        <Card name='DarkHorse Coffee' href='/coffee-store/darkhorse-coffee' imgUrl='' />
       </main>
     </div>
   )
