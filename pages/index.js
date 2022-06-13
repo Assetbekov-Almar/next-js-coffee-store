@@ -2,9 +2,18 @@ import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 import Banner from "../components/banner";
 import Card from "../components/card";
+import img from '../public/vercel.svg'
+import coffeeStores from '../data/coffee-stores.json'
 
-export default function Home() {
+export async function getStaticProps(context) {
+  return {
+    props: {
+      coffeeStores
+    }
+  }
+}
 
+export default function Home(props) {
   const handleOnBannerBtnClick = () => {
     console.log('banner')
   }
@@ -19,7 +28,18 @@ export default function Home() {
 
       <main className={styles.main}>
         <Banner buttonText="View stores nearby" handleOnClick={handleOnBannerBtnClick} />
-        <Card name='DarkHorse Coffee' href='/coffee-store/darkhorse-coffee' imgUrl='' />
+        <div className={styles.cardLayout}>
+          {props.coffeeStores.map(coffeeStore => (
+              <Card
+                key={coffeeStore.id}
+                name={coffeeStore.name}
+                href={`coffee-store/${coffeeStore.id}`}
+                imgUrl={coffeeStore.imgUrl}
+                className={styles.card}
+              />
+            ))
+          }
+        </div>
       </main>
     </div>
   )
