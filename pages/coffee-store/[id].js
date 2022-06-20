@@ -1,25 +1,27 @@
 import Link from "next/link";
-import coffeeStoresData from '../../data/coffee-stores.json'
 import {useRouter} from "next/router";
 import Head from "next/head";
 import styles from "../../styles/coffee-store.module.css";
 import Image from "next/image";
 import cls from "classnames";
 import {useState} from "react";
+import {fetchCoffeeStores} from "../../lib/coffee-stores";
 
-export function getStaticProps({ params }) {
+export async function getStaticProps({ params }) {
+	const coffeeStores = await fetchCoffeeStores()
 	return {
 		props: {
-			coffeeStore: coffeeStoresData.find(coffeeStore => {
-				return coffeeStore.id.toString() === params.id
+			coffeeStore: coffeeStores.find(coffeeStore => {
+				return coffeeStore.fsq_id === params.id
 			})
 		}
 	}
 }
 
-export function getStaticPaths() {
-	const paths = coffeeStoresData.map(coffeeStore => ({
-			params: { id: coffeeStore.id.toString() }
+export async function getStaticPaths() {
+	const coffeeStores = await fetchCoffeeStores()
+	const paths = coffeeStores.map(coffeeStore => ({
+			params: { id: coffeeStore.fsq_id }
 		}))
 
 	return {
@@ -35,10 +37,11 @@ const CoffeeStore = (props) => {
 		return <div>Loading...</div>
 	}
 
+	const { formatted_address = "" } = props.coffeeStore.location
+
 	const {
 		name = "",
-		address = "",
-		neighbourhood = "",
+		distance = "",
 		imgUrl = "",
 	} = props.coffeeStore;
 
@@ -77,7 +80,7 @@ const CoffeeStore = (props) => {
 				</div>
 
 				<div className={cls("glass", styles.col2)}>
-					{address && (
+					{formatted_address && (
 						<div className={styles.iconWrapper}>
 							<Image
 								src="/static/icons/places.svg"
@@ -85,10 +88,10 @@ const CoffeeStore = (props) => {
 								height="24"
 								alt="places icon"
 							/>
-							<p className={styles.text}>{address}</p>
+							<p className={styles.text}>{formatted_address}</p>
 						</div>
 					)}
-					{neighbourhood && (
+					{distance && (
 						<div className={styles.iconWrapper}>
 							<Image
 								src="/static/icons/nearMe.svg"
@@ -96,7 +99,7 @@ const CoffeeStore = (props) => {
 								height="24"
 								alt="near me icon"
 							/>
-							<p className={styles.text}>{neighbourhood}</p>
+							<p className={styles.text}>{distance}</p>
 						</div>
 					)}
 					<div className={styles.iconWrapper}>
