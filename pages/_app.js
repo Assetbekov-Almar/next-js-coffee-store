@@ -4,6 +4,7 @@ import '../styles/globals.css'
 const StoreContext = createContext()
 
 const StoreProvider = ({ children }) => {
+  console.log('test')
   const initialState = {
     latLong: '',
     coffeeStores: []
