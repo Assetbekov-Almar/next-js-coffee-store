@@ -9,11 +9,13 @@ import {fetchCoffeeStores} from "../../lib/coffee-stores";
 
 export async function getStaticProps({ params }) {
 	const coffeeStores = await fetchCoffeeStores()
+	const foundCoffeeStoreById = coffeeStores.find(coffeeStore => {
+		return coffeeStore.fsq_id === params.id
+	})
+
 	return {
 		props: {
-			coffeeStore: coffeeStores.find(coffeeStore => {
-				return coffeeStore.fsq_id === params.id
-			})
+			coffeeStore: foundCoffeeStoreById || {}
 		}
 	}
 }
@@ -37,7 +39,7 @@ const CoffeeStore = (props) => {
 		return <div>Loading...</div>
 	}
 
-	const { formatted_address = "" } = props.coffeeStore.location
+	const { formatted_address = "" } = props.coffeeStore?.location || {}
 
 	const {
 		name = "",
